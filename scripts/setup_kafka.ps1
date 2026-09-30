@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-# Ir automáticamente a la raíz del proyecto
+# Ir automaticamente a la raiz del proyecto
 $ProjectRoot = Split-Path $PSScriptRoot -Parent
 Set-Location $ProjectRoot
 
@@ -13,8 +13,11 @@ Write-Host ""
 Write-Host "1. Levantando Kafka..."
 docker compose up -d
 
+# Dar unos segundos al contenedor para iniciar
+Start-Sleep -Seconds 3
+
 Write-Host ""
-Write-Host "2. Esperando a que Kafka esté disponible..."
+Write-Host "2. Esperando a que Kafka este disponible..."
 
 $maxAttempts = 30
 $attempt = 0
@@ -24,10 +27,10 @@ while (-not $ready -and $attempt -lt $maxAttempts) {
 
     $attempt++
 
-    docker exec kafka `
+    & docker exec kafka `
         /opt/kafka/bin/kafka-topics.sh `
         --bootstrap-server localhost:9092 `
-        --list *> $null
+        --list 2>$null | Out-Null
 
     if ($LASTEXITCODE -eq 0) {
         $ready = $true
@@ -43,10 +46,10 @@ if (-not $ready) {
     exit 1
 }
 
-Write-Host "   Kafka está listo."
+Write-Host "   Kafka esta listo."
 
 Write-Host ""
-Write-Host "3. Creando tópico de entrada..."
+Write-Host "3. Creando topico de entrada..."
 
 docker exec kafka `
     /opt/kafka/bin/kafka-topics.sh `
@@ -58,7 +61,7 @@ docker exec kafka `
     --replication-factor 1
 
 Write-Host ""
-Write-Host "4. Creando tópico de salida..."
+Write-Host "4. Creando topico de salida..."
 
 docker exec kafka `
     /opt/kafka/bin/kafka-topics.sh `
@@ -71,7 +74,7 @@ docker exec kafka `
     --config cleanup.policy=compact
 
 Write-Host ""
-Write-Host "5. Verificando configuración compactada del tópico de salida..."
+Write-Host "5. Verificando configuracion compactada del topico de salida..."
 
 docker exec kafka `
     /opt/kafka/bin/kafka-configs.sh `
@@ -82,7 +85,7 @@ docker exec kafka `
     --add-config cleanup.policy=compact
 
 Write-Host ""
-Write-Host "6. Tópicos disponibles:"
+Write-Host "6. Topicos disponibles:"
 
 docker exec kafka `
     /opt/kafka/bin/kafka-topics.sh `
