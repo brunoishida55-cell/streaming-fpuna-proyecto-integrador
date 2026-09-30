@@ -1,1 +1,2 @@
 kafka-python==3.0.11
+apache-beam==2.76.0
