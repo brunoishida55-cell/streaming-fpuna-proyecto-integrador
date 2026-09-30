@@ -26,7 +26,7 @@ Fuente de eventos -> Apache Kafka -> Apache Beam -> Salida
 
 
 
-El productor sintÃ©tico genera mediciones de tres sensores y permite simular eventos normales, duplicados y eventos tardÃ­os o fuera de orden.
+El productor sintáctico genera mediciones de tres sensores y permite simular eventos normales, duplicados y eventos tardíos o fuera de orden.
 
 
 
